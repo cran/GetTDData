@@ -1,0 +1,76 @@
+---
+title: "Downloading Data from Tesouro Direto"
+author: "Marcelo Perlin"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How to use GetTDData}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+
+Information regarding prices and  yields of bonds issued by the Brazilian government can be download manually as excel files from the [Tesouro Direto website](http://www.tesouro.fazenda.gov.br/tesouro-direto-balanco-e-estatisticas). However, it can be painful to aggregate all of this data into something useful for analysis as the files don't have an uniform format and are all divided by year and asset code. 
+
+The package GetTDData makes the process of importing data from Tesouro direto much easier. All you need is the name of the asset (e.g. LTN, LFT, NTN) and the desired date of maturity (e.g. 010116). 
+
+## How to use GetTDData
+
+Using GetTDData is pretty simple. Suppose you wanted data (prices and yields) for a LTN[^1] with a maturity date equal to 2016-01-01. For that, all you need to do is run the following code:
+
+[^1]: LTN is the most basic bond that the Brazilian government issues. This financial contract is cupom-free and will pay 1000R$ at its maturity date.
+
+```{r example1}
+library(GetTDData)
+
+asset.code <- 'LTN'   # File Name of asset 
+maturity <- '010116'  # Maturity date as string (ddmmyy)
+
+my.flag <- download.TD.data(asset.code = asset.code)
+
+my.df <- read.TD.files(maturity = maturity)
+
+```
+
+Now, let's plot the prices to check if the code worked well. 
+
+```{r plot.prices, fig.width=7, fig.height=2.5}
+library(ggplot2)
+
+p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = price.bid, color = asset.code))
+p <- p + geom_point() + scale_x_date() + labs(title = '', x = 'Dates')
+print(p)
+```
+
+As expected, the prices from this bond will converge to its face value, 1000 R$, at the maturity date (2016-01-01). We can also look at its time-varying yield:
+
+
+```{r plot.yield, fig.width=7, fig.height=2.5}
+p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = yield.bid, color = asset.code))
+p <- p + geom_point() + scale_x_date()+ labs(title = '', x = 'Dates' )
+print(p)
+
+```
+
+The functions in `GetTDData` also works with multiple arguments as `asset.code` and `maturity`. Suppose we wanted to look at the prices of all available maturities for bonds of type LTN. All we need to do is to add the value `NULL` to the argument `maturity`:
+
+```{r example2, fig.width=7, fig.height=2.5}
+library(GetTDData)
+library(ggplot2)
+
+asset.code <- 'LTN'   # Name of asset
+maturity <- NULL      # downloads all maturities
+
+# download data
+my.flag <- download.TD.data(asset.code = asset.code)
+
+# reads data
+my.df <- read.TD.files(maturity = maturity)
+
+# plot data
+p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = price.bid, color = asset.code))
+p <- p + geom_point() + scale_x_date() + labs(title = '', x = 'Dates' )
+print(p)
+
+```

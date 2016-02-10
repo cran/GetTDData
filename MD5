@@ -1,0 +1,13 @@
+d076c768f1edf7217e85cfdca20bab5f *DESCRIPTION
+34320f5a3ab8b2e63c83b6166bd51e55 *NAMESPACE
+ae179a297ff0d8df3f4366b179909247 *R/gtdd_download_TD_data.R
+1b8b4229eed06a6d3cbc4cd87394e665 *R/gtdd_read_TD_files.R
+9a58b281170768044d4506ccd5864f61 *build/vignette.rds
+0f6025fca3d6e10e881998897d9ef045 *inst/doc/gtdd-vignette.R
+03a4c226f88d83eb2d284a6ef1434379 *inst/doc/gtdd-vignette.Rmd
+ee21c7088ac8ff410cf22a22a739a0d8 *inst/doc/gtdd-vignette.html
+5f5b814e031d539cc03cf3d03bb1bc07 *man/download.TD.data.Rd
+13f6d62ad8df441fcf0f011955c2223e *man/read.TD.files.Rd
+407368f591bed33ff7f8024e11e76434 *tests/testthat.R
+6c91f7e7bae3a73e2fd5c3100f7eb9ef *tests/testthat/test_gtdd.R
+03a4c226f88d83eb2d284a6ef1434379 *vignettes/gtdd-vignette.Rmd
