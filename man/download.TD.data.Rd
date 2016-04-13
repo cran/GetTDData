@@ -5,7 +5,7 @@
 \title{Downloads data of Brazilian government bonds directly from the website}
 \usage{
 download.TD.data(asset.codes = "LTN", dl.folder = "TD Files",
-  do.clean.up = T)
+  do.clean.up = T, do.overwrite = F)
 }
 \arguments{
 \item{asset.codes}{Strings that identify the assets (1 or more assets) in the
@@ -16,6 +16,9 @@ will download all available assets}
 create if it does not exists)}
 
 \item{do.clean.up}{Clean up folder before downloading? (TRUE or FALSE)}
+
+\item{do.overwrite}{Overwrite excel files? (TRUE or FALSE). If FALSE, will
+only download the new data for the current year}
 }
 \value{
 TRUE if successful
@@ -23,13 +26,13 @@ TRUE if successful
 \description{
 This function looks into the tesouro direto website
 (http://www.tesouro.fazenda.gov.br/tesouro-direto-balanco-e-estatisticas) and
-downloads all of the files containing prices and yield of governmment bonds.
+downloads all of the files containing prices and yields of government bonds.
 You can use input asset.codes to restrict the downloads to specific bonds
 }
 \examples{
-# only download file where string LTN_2012 is found in its name
+# only download file where string LTN_2015 is found in its name
 # (only 1 file for simplicity)
-download.TD.data(asset.codes = 'LTN_2012')
+download.TD.data(asset.codes = 'LTN_2015')
 
 # The excel file shoulbe available in folder 'TD Files' (default name)
 

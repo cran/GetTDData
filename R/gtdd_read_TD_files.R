@@ -4,7 +4,7 @@
 #'
 #' @param dl.folder Folder with excel files from tesouro direto
 #' @param maturity A character vector with the desired maturities (in format
-#'   ddmmyy, e.g. "01012016"). If set to NULL, will download all maturities of
+#'   ddmmyy, e.g. "010116"). If set to NULL, will download all maturities of
 #'   all asset codes
 #' @param cols.to.import Columns (numeric) to import from excel files (open and
 #'   check the columns of the excel file from tesouro direto for details)

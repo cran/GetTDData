@@ -1,7 +1,7 @@
 ## ----example1------------------------------------------------------------
 library(GetTDData)
 
-asset.code <- 'LTN'   # File Name of asset 
+asset.code <- 'LTN'   # Identifier of assets 
 maturity <- '010116'  # Maturity date as string (ddmmyy)
 
 my.flag <- download.TD.data(asset.code = asset.code)

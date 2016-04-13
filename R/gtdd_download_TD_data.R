@@ -2,7 +2,7 @@
 #'
 #' This function looks into the tesouro direto website
 #' (http://www.tesouro.fazenda.gov.br/tesouro-direto-balanco-e-estatisticas) and
-#' downloads all of the files containing prices and yield of governmment bonds.
+#' downloads all of the files containing prices and yields of government bonds.
 #' You can use input asset.codes to restrict the downloads to specific bonds
 #'
 #' @param asset.codes Strings that identify the assets (1 or more assets) in the
@@ -11,20 +11,23 @@
 #' @param dl.folder Name of folder to save excel files from tesouro direto (will
 #'   create if it does not exists)
 #' @param do.clean.up Clean up folder before downloading? (TRUE or FALSE)
+#' @param do.overwrite Overwrite excel files? (TRUE or FALSE). If FALSE, will
+#'   only download the new data for the current year
 #'
 #' @return TRUE if successful
 #' @export
 #'
 #' @examples
-#' # only download file where string LTN_2012 is found in its name
+#' # only download file where string LTN_2015 is found in its name
 #' # (only 1 file for simplicity)
-#' download.TD.data(asset.codes = 'LTN_2012')
+#' download.TD.data(asset.codes = 'LTN_2015')
 #'
 #' # The excel file shoulbe available in folder 'TD Files' (default name)
 #'
 download.TD.data <- function(asset.codes = 'LTN',
                              dl.folder = 'TD Files',
-                             do.clean.up = T) {
+                             do.clean.up = T,
+                             do.overwrite = F) {
   # check folder
 
   if (!dir.exists(dl.folder)) {
@@ -36,6 +39,13 @@ download.TD.data <- function(asset.codes = 'LTN',
   if (do.clean.up) {
     list.f <- dir(dl.folder, pattern = '*.xls', full.names = T)
     file.remove(list.f)
+  }
+
+  # check if user has internet
+  test.internet <- curl::has_internet()
+
+  if (!test.internet){
+    stop('No internet connection found...')
   }
 
   base.url <-
@@ -67,7 +77,6 @@ download.TD.data <- function(asset.codes = 'LTN',
   }
 
   my.links <- lapply(my.links ,FUN = fixLinks)
-
   my.links <- paste(my.links)
 
   # find asset code in links
@@ -93,13 +102,26 @@ download.TD.data <- function(asset.codes = 'LTN',
       paste0(dl.folder,'/',splitted.str[length(splitted.str)])
 
     cat(paste0('\nDownloading file ', out.file, ' (',my.c, '-', n.links, ')'))
+
+    # check if file exists and if it does not contain the current year
+    # in its name (thats how tesouro direto stores new data)
+
+    test.current.year <- stringr::str_detect(out.file,format(Sys.Date(),'%Y'))
+
+    if (file.exists(out.file)&(!test.current.year)&(!do.overwrite)){
+
+      cat(' Found file in folder, skipping it.')
+      my.c <- my.c + 1
+      next()
+    }
+
+    cat(' Downloading...')
     utils::download.file(
       url = i.link,
       method = 'internal',
       mode = 'wb',
       destfile = out.file,
-      quiet = T
-    )
+      quiet = T )
 
     my.c <- my.c + 1
 

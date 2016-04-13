@@ -9,22 +9,20 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-# Introduction
+Information regarding prices and  yields of bonds issued by the Brazilian government can be download manually as excel files from the [Tesouro Direto website](http://www.tesouro.fazenda.gov.br/tesouro-direto-balanco-e-estatisticas). However, it can be painful to aggregate all of this data into something useful as the files don't have an uniform format and are all divided by year and asset code.
 
-Information regarding prices and  yields of bonds issued by the Brazilian government can be download manually as excel files from the [Tesouro Direto website](http://www.tesouro.fazenda.gov.br/tesouro-direto-balanco-e-estatisticas). However, it can be painful to aggregate all of this data into something useful for analysis as the files don't have an uniform format and are all divided by year and asset code. 
-
-The package GetTDData makes the process of importing data from Tesouro direto much easier. All you need is the name of the asset (e.g. LTN, LFT, NTN) and the desired date of maturity (e.g. 010116). 
+The package GetTDData makes the process of importing data from Tesouro direto much easier. All that you need in order to download the data is the name of the assets (e.g. LTN, LFT, NTN) and the desired dates of maturity (e.g. 2016-01-01). 
 
 ## How to use GetTDData
 
-Using GetTDData is pretty simple. Suppose you wanted data (prices and yields) for a LTN[^1] with a maturity date equal to 2016-01-01. For that, all you need to do is run the following code:
+Using GetTDData is pretty simple. Suppose you need financial data (prices and yields) for a LTN with a maturity date equal to 2016-01-01. This debt constract is the most basic bond that the Brazilian government issues. It does not pay any value during its lifetime and will pay 1000R$ at its maturity date.
 
-[^1]: LTN is the most basic bond that the Brazilian government issues. This financial contract is cupom-free and will pay 1000R$ at its maturity date.
+In order to get the data, all you need to do is run the following code in R:
 
 ```{r example1}
 library(GetTDData)
 
-asset.code <- 'LTN'   # File Name of asset 
+asset.code <- 'LTN'   # Identifier of assets 
 maturity <- '010116'  # Maturity date as string (ddmmyy)
 
 my.flag <- download.TD.data(asset.code = asset.code)
@@ -43,7 +41,7 @@ p <- p + geom_point() + scale_x_date() + labs(title = '', x = 'Dates')
 print(p)
 ```
 
-As expected, the prices from this bond will converge to its face value, 1000 R$, at the maturity date (2016-01-01). We can also look at its time-varying yield:
+As expected, the prices from this bond will converge to its face value, 1000 R$, at the maturity date (2016-01-01). We can also look at its time-varying annual yield:
 
 
 ```{r plot.yield, fig.width=7, fig.height=2.5}

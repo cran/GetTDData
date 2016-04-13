@@ -12,7 +12,7 @@ read.TD.files(dl.folder = "TD Files", maturity = NULL,
 \item{dl.folder}{Folder with excel files from tesouro direto}
 
 \item{maturity}{A character vector with the desired maturities (in format
-ddmmyy, e.g. "01012016"). If set to NULL, will download all maturities of
+ddmmyy, e.g. "010116"). If set to NULL, will download all maturities of
 all asset codes}
 
 \item{cols.to.import}{Columns (numeric) to import from excel files (open and
