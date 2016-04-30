@@ -43,6 +43,10 @@ read.TD.files <- function(dl.folder = 'TD Files',
     stop('The lenghts of cols.cols.to.import and col.names should be equal')
   }
 
+  if(any(cols.to.import>6)){
+    stop('The maximum possible value in cols.to.import is 6. Thats the number of columns in the excel files.')
+  }
+
   if (!dir.exists(dl.folder)){
     stop(paste('Cant find folder', dl.folder))
   }
@@ -60,8 +64,10 @@ read.TD.files <- function(dl.folder = 'TD Files',
 
     cat(paste('\n Reading File = ', i.f, sep = ''))
 
-    wb <- xlsx::loadWorkbook(i.f)
-    sheets <- names(xlsx::getSheets(wb))
+   # Use capture.output so that no message "DEFINEDNAME" is shown
+   # Details in: https://github.com/hadley/readxl/issues/82#issuecomment-166767220
+
+   utils::capture.output( sheets <- readxl::excel_sheets(i.f) )
 
     # find maturities
     if (!is.null(maturity)){
@@ -85,14 +91,21 @@ read.TD.files <- function(dl.folder = 'TD Files',
 
       cat(paste('\n    Reading Sheet ', i.sheet, sep = ''))
 
+      # Read it with readxl (use capture.output to avoid "DEFINEDNAME:"  issue)
+      # see: https://github.com/hadley/readxl/issues/111
+      utils::capture.output( temp.df <- readxl::read_excel(path = i.f,sheet = i.sheet) )
 
+      # control for columns
 
-      temp.df <- xlsx::read.xlsx(i.f,
-                                 sheetIndex = i.sheet,
-                                 stringsAsFactors=F,
-                                 colIndex = cols.to.import  )
+      if (max(cols.to.import)>ncol(temp.df)){
+        stop(paste0('In file ',i.f, ' the number of columns is lower than ',max(cols.to.import),
+                    '. Please supply values of cols.to.import that make sense.'))
+      }
 
+      # filter columns to import
+      temp.df <- temp.df[,cols.to.import]
       n.col <- ncol(temp.df)
+
       # fix for different format of xls files
 
       colnames(temp.df) <- col.names
@@ -101,7 +114,7 @@ read.TD.files <- function(dl.folder = 'TD Files',
       temp.df <- temp.df[stats::complete.cases(temp.df), ]
 
 
-      # fix for data in xls (for some files, dates come in a numeric format and for others as strings)
+      # fix for data in xls (for some files, dates comes in a numeric format and for others as strings)
 
       if (stringr::str_detect(as.character(temp.df$ref.date[1]),'/')){
 

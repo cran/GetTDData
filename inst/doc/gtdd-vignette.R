@@ -27,7 +27,7 @@ library(GetTDData)
 library(ggplot2)
 
 asset.code <- 'LTN'   # Name of asset
-maturity <- NULL      # downloads all maturities
+maturity <- NULL      # = NULL, downloads all maturities
 
 # download data
 my.flag <- download.TD.data(asset.code = asset.code)
@@ -35,9 +35,14 @@ my.flag <- download.TD.data(asset.code = asset.code)
 # reads data
 my.df <- read.TD.files(maturity = maturity)
 
-# plot data
+# plot data (prices)
 p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = price.bid, color = asset.code))
-p <- p + geom_point() + scale_x_date() + labs(title = '', x = 'Dates' )
+p <- p + geom_point() + scale_x_date() + labs(title = '', x = 'Dates', y = 'Prices' )
+print(p)
+
+# plot data (yields)
+p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = yield.bid, color = asset.code))
+p <- p + geom_point() + scale_x_date() + labs(title = '', x = 'Dates', y = 'Yields' )
 print(p)
 
 

@@ -9,15 +9,15 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Information regarding prices and  yields of bonds issued by the Brazilian government can be download manually as excel files from the [Tesouro Direto website](http://www.tesouro.fazenda.gov.br/tesouro-direto-balanco-e-estatisticas). However, it can be painful to aggregate all of this data into something useful as the files don't have an uniform format and are all divided by year and asset code.
+Information regarding prices and  yields of bonds issued by the Brazilian government can be downloaded manually as excel files from the [Tesouro Direto website](http://www.tesouro.fazenda.gov.br/tesouro-direto-balanco-e-estatisticas). However, it can be painful to aggregate all of this data into something useful as the files don't have an uniform format and are all divided by year and asset code.
 
 The package GetTDData makes the process of importing data from Tesouro direto much easier. All that you need in order to download the data is the name of the assets (e.g. LTN, LFT, NTN) and the desired dates of maturity (e.g. 2016-01-01). 
 
 ## How to use GetTDData
 
-Using GetTDData is pretty simple. Suppose you need financial data (prices and yields) for a LTN with a maturity date equal to 2016-01-01. This debt constract is the most basic bond that the Brazilian government issues. It does not pay any value during its lifetime and will pay 1000R$ at its maturity date.
+Suppose you need financial data (prices and yields) for a bond of type LTN with a maturity date equal to 2016-01-01. This debt constract is the most basic bond that the Brazilian government issues. It does not pay any value during its lifetime and will pay 1000R$ at its maturity date.
 
-In order to get the data, all you need to do is run the following code in R:
+In order to get the data, all you need to do is to run the following code in R:
 
 ```{r example1}
 library(GetTDData)
@@ -31,7 +31,7 @@ my.df <- read.TD.files(maturity = maturity)
 
 ```
 
-Now, let's plot the prices to check if the code worked well. 
+Let's plot the prices to check if the code worked well. 
 
 ```{r plot.prices, fig.width=7, fig.height=2.5}
 library(ggplot2)
@@ -58,7 +58,7 @@ library(GetTDData)
 library(ggplot2)
 
 asset.code <- 'LTN'   # Name of asset
-maturity <- NULL      # downloads all maturities
+maturity <- NULL      # = NULL, downloads all maturities
 
 # download data
 my.flag <- download.TD.data(asset.code = asset.code)
@@ -66,9 +66,14 @@ my.flag <- download.TD.data(asset.code = asset.code)
 # reads data
 my.df <- read.TD.files(maturity = maturity)
 
-# plot data
+# plot data (prices)
 p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = price.bid, color = asset.code))
-p <- p + geom_point() + scale_x_date() + labs(title = '', x = 'Dates' )
+p <- p + geom_point() + scale_x_date() + labs(title = '', x = 'Dates', y = 'Prices' )
+print(p)
+
+# plot data (yields)
+p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = yield.bid, color = asset.code))
+p <- p + geom_point() + scale_x_date() + labs(title = '', x = 'Dates', y = 'Yields' )
 print(p)
 
 ```
