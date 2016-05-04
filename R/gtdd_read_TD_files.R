@@ -95,6 +95,9 @@ read.TD.files <- function(dl.folder = 'TD Files',
       # see: https://github.com/hadley/readxl/issues/111
       utils::capture.output( temp.df <- readxl::read_excel(path = i.f,sheet = i.sheet) )
 
+      # make sure it is a dataframe (readxl has a different format as output)
+      temp.df <- as.data.frame(temp.df) 
+      
       # control for columns
 
       if (max(cols.to.import)>ncol(temp.df)){
@@ -133,7 +136,7 @@ read.TD.files <- function(dl.folder = 'TD Files',
 
 
   }
-
+  
   my.df <- my.df[stats::complete.cases(my.df), ]
 
   return(my.df)

@@ -1,4 +1,7 @@
-### Version 1.1.1 (2016-04-29)
+### Version 1.2.1 (2016-05-04)
+	- Fixed bug in read.td.files (it was not reading data after 2012 because of change of output type given switch from xlsx:read.xlsx to readxl::read_excel)
+
+### Version 1.2 (2016-04-29)
 	- Now using readxl::read_excel, a better excel reader, FASTER and without the java requirements
 	- Additional error checks
 	

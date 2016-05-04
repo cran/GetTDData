@@ -13,12 +13,12 @@ my.df <- read.TD.files(maturity = maturity)
 library(ggplot2)
 
 p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = price.bid, color = asset.code))
-p <- p + geom_point() + scale_x_date() + labs(title = '', x = 'Dates')
+p <- p + geom_line(size = 1) + scale_x_date() + labs(title = '', x = 'Dates')
 print(p)
 
 ## ----plot.yield, fig.width=7, fig.height=2.5-----------------------------
 p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = yield.bid, color = asset.code))
-p <- p + geom_point() + scale_x_date()+ labs(title = '', x = 'Dates' )
+p <- p + geom_line(size = 1) + scale_x_date()+ labs(title = '', x = 'Dates' )
 print(p)
 
 
@@ -37,12 +37,12 @@ my.df <- read.TD.files(maturity = maturity)
 
 # plot data (prices)
 p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = price.bid, color = asset.code))
-p <- p + geom_point() + scale_x_date() + labs(title = '', x = 'Dates', y = 'Prices' )
+p <- p + geom_line() + scale_x_date() + labs(title = '', x = 'Dates', y = 'Prices' )
 print(p)
 
 # plot data (yields)
 p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = yield.bid, color = asset.code))
-p <- p + geom_point() + scale_x_date() + labs(title = '', x = 'Dates', y = 'Yields' )
+p <- p + geom_line() + scale_x_date() + labs(title = '', x = 'Dates', y = 'Yields' )
 print(p)
 
 
