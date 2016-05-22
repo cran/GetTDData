@@ -4,12 +4,16 @@
 \alias{read.TD.files}
 \title{Reading excel files from Tesouro Direto}
 \usage{
-read.TD.files(dl.folder = "TD Files", maturity = NULL,
+read.TD.files(dl.folder = "TD Files", asset.codes = NULL, maturity = NULL,
   cols.to.import = c(1, 2, 4), col.names = c("ref.date", "yield.bid",
   "price.bid"))
 }
 \arguments{
 \item{dl.folder}{Folder with excel files from tesouro direto}
+
+\item{asset.codes}{Strings that identify the assets (1 or more assets) in the
+names of the excel files. E.g. asset.codes = 'LTN'. When set to NULL, it
+will download all available assets}
 
 \item{maturity}{A character vector with the desired maturities (in format
 ddmmyy, e.g. "010116"). If set to NULL, will download all maturities of
@@ -31,9 +35,9 @@ Reads files downloaded by \code{\link{download.TD.data}}
 # Downloads data from tesouro direto (only 1 file for simplicity)
 
 dl.folder ='TD Files'
-download.TD.data(asset.codes = 'LTN_2015', dl.folder = dl.folder)
+download.TD.data(asset.codes = 'LTN', dl.folder = dl.folder, n.dl = 1)
 
-my.df <- read.TD.files(dl.folder = dl.folder, maturity ='010116')
+my.df <- read.TD.files(dl.folder = dl.folder, maturity ='010117')
 
 }
 

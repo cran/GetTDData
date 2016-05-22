@@ -13,21 +13,24 @@
 #' @param do.clean.up Clean up folder before downloading? (TRUE or FALSE)
 #' @param do.overwrite Overwrite excel files? (TRUE or FALSE). If FALSE, will
 #'   only download the new data for the current year
+#' @param n.dl Sets how many files to download from the website. Used only to
+#'   decrease CRAN CHECK time. The default value is NULL (downloads all files)
 #'
 #' @return TRUE if successful
 #' @export
 #'
 #' @examples
-#' # only download file where string LTN_2015 is found in its name
+#' # only download file where string LTN is found
 #' # (only 1 file for simplicity)
-#' download.TD.data(asset.codes = 'LTN_2015')
+#' download.TD.data(asset.codes = 'LTN', n.dl = 1)
 #'
 #' # The excel file shoulbe available in folder 'TD Files' (default name)
 #'
 download.TD.data <- function(asset.codes = 'LTN',
                              dl.folder = 'TD Files',
-                             do.clean.up = T,
-                             do.overwrite = F) {
+                             do.clean.up = F,
+                             do.overwrite = F,
+                             n.dl = NULL) {
   # check folder
 
   if (!dir.exists(dl.folder)) {
@@ -48,8 +51,21 @@ download.TD.data <- function(asset.codes = 'LTN',
     stop('No internet connection found...')
   }
 
+  # check if names names sense
+
+  if (!is.null(asset.codes)){
+    possible.names <- c("LFT","LTN","NTN-C","NTN-B","NTN-B Principal","NTN-F")
+
+    idx <- asset.codes %in% possible.names
+
+    if (!any(idx)){
+      stop(paste(c('Input asset.codes not valid. It should be one or many of the following: ', possible.names), collapse = ', '))
+    }
+
+  }
+
   base.url <-
-    "http://www.tesouro.fazenda.gov.br/tesouro-direto-balanco-e-estatisticas"
+    "http://sisweb.tesouro.gov.br/apex/f?p=2031:2::::::"
 
   # read html
   html.code <- paste(readLines(base.url, warn = F), collapse = "\n")
@@ -57,49 +73,72 @@ download.TD.data <- function(asset.codes = 'LTN',
   # fixing links strings
 
   my.links <-
-    stringr::str_extract_all(html.code,pattern = '<a href=\"(.*?).xls\"')[[1]][c(-1,-2)]
+    stringr::str_extract_all(html.code,pattern = 'href=\"(.*?)\" download')[[1]]
   my.links <-
-    stringr::str_replace_all(my.links,'<a href=\"',replacement = '')
+    stringr::str_replace_all(my.links,'href=\"',replacement = '')
   my.links <-
-    stringr::str_replace_all(my.links,'\"',replacement = '')
+    stringr::str_replace_all(my.links,'\" download',replacement = '')
 
-  fixLinks <- function(linkIn) {
-    if (!stringr::str_detect(linkIn, 'www3.tesouro.gov.br')) {
-      linkOut <- paste('http://www.tesouro.fazenda.gov.br',linkIn,sep = '')
+  # find names in links
 
-    } else {
-      linkOut <- linkIn
+  my.names <-
+    stringr::str_extract_all(html.code,pattern = 'download>(.*?)</a>')[[1]]
+  my.names <-
+    stringr::str_replace_all(my.names ,'download>',replacement = '')
+  my.names <-
+    stringr::str_replace_all(my.names ,'</a>',replacement = '')
 
-    }
+  # finding years from website
 
-    return(linkOut)
+  first.year <- 2002
+  year.now <- as.numeric(format(Sys.Date(),'%Y'))
+  seq.years <- seq(from =   year.now, to = first.year)
 
+  str.now <- sprintf('<span>%i - </span>',seq.years)
+
+  idx <- stringr::str_locate(string = html.code,str.now)
+  idx <- idx[,1]
+
+  idx <- c(as.numeric(idx), nchar(html.code))
+
+  sub.strings <- stringr::str_sub(html.code,start=idx[1:(length(idx)-1)],end = idx[2:(length(idx))])
+
+  my.fct <- function(x,sub.strings){
+    idx <- which(stringr::str_detect(sub.strings, stringr::fixed(x) ))
+    return(idx)
   }
 
-  my.links <- lapply(my.links ,FUN = fixLinks)
-  my.links <- paste(my.links)
+  idx.years <- sapply(X = my.links, FUN = my.fct, sub.strings=sub.strings)
 
-  # find asset code in links
+  my.years <- seq.years[idx.years]
+
+  # find asset code in names
 
   if (!is.null(asset.codes)) {
-    idx <- logical(length = length(my.links))
-    for (i.asset in asset.codes) {
-      temp.idx <- stringr::str_detect(string = my.links,pattern = i.asset)
-      idx <- idx | temp.idx
-    }
+
+    idx <- my.names %in% asset.codes
 
     my.links <- my.links[idx]
+    my.names <- my.names[idx]
+    my.years <- my.years[idx]
 
   }
 
+  # proceed with download loop
 
   n.links <- length(my.links)
 
+  if (!is.null(n.dl)){
+    my.links <-my.links[1:n.dl]
+  }
+
   my.c <- 1
   for (i.link in my.links) {
-    splitted.str <- stringr::str_split(i.link,'/')[[1]]
+
     out.file <-
-      paste0(dl.folder,'/',splitted.str[length(splitted.str)])
+      paste0(dl.folder,'/',paste0(my.names[my.c],'_',my.years[my.c], '.xls'))
+
+    i.link <- paste0('http://sisweb.tesouro.gov.br/apex/', i.link)
 
     cat(paste0('\nDownloading file ', out.file, ' (',my.c, '-', n.links, ')'))
 
@@ -114,6 +153,8 @@ download.TD.data <- function(asset.codes = 'LTN',
       my.c <- my.c + 1
       next()
     }
+
+    #browser()
 
     cat(' Downloading...')
     utils::download.file(

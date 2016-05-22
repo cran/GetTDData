@@ -5,7 +5,7 @@
 \title{Downloads data of Brazilian government bonds directly from the website}
 \usage{
 download.TD.data(asset.codes = "LTN", dl.folder = "TD Files",
-  do.clean.up = T, do.overwrite = F)
+  do.clean.up = F, do.overwrite = F, n.dl = NULL)
 }
 \arguments{
 \item{asset.codes}{Strings that identify the assets (1 or more assets) in the
@@ -19,6 +19,9 @@ create if it does not exists)}
 
 \item{do.overwrite}{Overwrite excel files? (TRUE or FALSE). If FALSE, will
 only download the new data for the current year}
+
+\item{n.dl}{Sets how many files to download from the website. Used only to
+decrease CRAN CHECK time. The default value is NULL (downloads all files)}
 }
 \value{
 TRUE if successful
@@ -30,9 +33,9 @@ downloads all of the files containing prices and yields of government bonds.
 You can use input asset.codes to restrict the downloads to specific bonds
 }
 \examples{
-# only download file where string LTN_2015 is found in its name
+# only download file where string LTN is found
 # (only 1 file for simplicity)
-download.TD.data(asset.codes = 'LTN_2015')
+download.TD.data(asset.codes = 'LTN', n.dl = 1)
 
 # The excel file shoulbe available in folder 'TD Files' (default name)
 

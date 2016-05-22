@@ -1,12 +1,13 @@
 ## ----example1------------------------------------------------------------
 library(GetTDData)
 
-asset.code <- 'LTN'   # Identifier of assets 
+asset.codes <- 'LTN'   # Identifier of assets 
 maturity <- '010116'  # Maturity date as string (ddmmyy)
 
-my.flag <- download.TD.data(asset.code = asset.code)
+my.flag <- download.TD.data(asset.codes = asset.codes)
 
-my.df <- read.TD.files(maturity = maturity)
+my.df <- read.TD.files(asset.codes = asset.codes,
+                       maturity = maturity)
 
 
 ## ----plot.prices, fig.width=7, fig.height=2.5----------------------------
@@ -26,14 +27,16 @@ print(p)
 library(GetTDData)
 library(ggplot2)
 
-asset.code <- 'LTN'   # Name of asset
+asset.codes <- 'LTN'   # Name of asset
 maturity <- NULL      # = NULL, downloads all maturities
 
 # download data
-my.flag <- download.TD.data(asset.code = asset.code)
+my.flag <- download.TD.data(asset.codes = asset.codes, 
+                            do.clean.up = F)
 
 # reads data
-my.df <- read.TD.files(maturity = maturity)
+my.df <- read.TD.files(asset.codes = asset.codes, 
+                       maturity = maturity)
 
 # plot data (prices)
 p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = price.bid, color = asset.code))

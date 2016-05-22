@@ -2,6 +2,9 @@
 #'
 #' Reads files downloaded by \code{\link{download.TD.data}}
 #'
+#' @param asset.codes Strings that identify the assets (1 or more assets) in the
+#'   names of the excel files. E.g. asset.codes = 'LTN'. When set to NULL, it
+#'   will download all available assets
 #' @param dl.folder Folder with excel files from tesouro direto
 #' @param maturity A character vector with the desired maturities (in format
 #'   ddmmyy, e.g. "010116"). If set to NULL, will download all maturities of
@@ -18,14 +21,15 @@
 #' # Downloads data from tesouro direto (only 1 file for simplicity)
 #'
 #' dl.folder ='TD Files'
-#' download.TD.data(asset.codes = 'LTN_2015', dl.folder = dl.folder)
+#' download.TD.data(asset.codes = 'LTN', dl.folder = dl.folder, n.dl = 1)
 #'
-#' my.df <- read.TD.files(dl.folder = dl.folder, maturity ='010116')
+#' my.df <- read.TD.files(dl.folder = dl.folder, maturity ='010117')
 #'
 read.TD.files <- function(dl.folder = 'TD Files',
-                              maturity = NULL,
-                              cols.to.import = c(1,2,4),
-                              col.names =  c('ref.date','yield.bid','price.bid')){
+                          asset.codes = NULL,
+                          maturity = NULL,
+                          cols.to.import = c(1,2,4),
+                          col.names =  c('ref.date','yield.bid','price.bid')){
 
   #require(xlsx)
 
@@ -50,6 +54,20 @@ read.TD.files <- function(dl.folder = 'TD Files',
   if (!dir.exists(dl.folder)){
     stop(paste('Cant find folder', dl.folder))
   }
+
+  # check if names names sense
+
+  if (!is.null(asset.codes)){
+    possible.names <- c("LFT","LTN","NTN-C","NTN-B","NTN-B Principal","NTN-F")
+
+    idx <- asset.codes %in% possible.names
+
+    if (!any(idx)){
+      stop(paste(c('Input asset.codes not valid. It should be one or many of the following: ', possible.names), collapse = ', '))
+    }
+
+  }
+
   cat('\nReading xls data and saving to data.frame')
 
   my.f <- list.files(dl.folder, full.names = T)
@@ -58,6 +76,19 @@ read.TD.files <- function(dl.folder = 'TD Files',
     stop(paste('Cant file xlsx files at',dl.folder))
   }
 
+  # check if asset.code exists and only reads the files that matter
+
+  if (!is.null(asset.codes)) {
+    idx <- logical(length = length(my.f))
+    for (i.asset in asset.codes) {
+      temp.idx <- stringr::str_detect(string = my.f,
+                                      pattern = i.asset)
+      idx <- idx | temp.idx
+    }
+
+    my.f <- my.f[idx]
+
+  }
 
   my.df <- data.frame()
   for (i.f in my.f){
@@ -96,8 +127,8 @@ read.TD.files <- function(dl.folder = 'TD Files',
       utils::capture.output( temp.df <- readxl::read_excel(path = i.f,sheet = i.sheet) )
 
       # make sure it is a dataframe (readxl has a different format as output)
-      temp.df <- as.data.frame(temp.df) 
-      
+      temp.df <- as.data.frame(temp.df)
+
       # control for columns
 
       if (max(cols.to.import)>ncol(temp.df)){
@@ -136,8 +167,30 @@ read.TD.files <- function(dl.folder = 'TD Files',
 
 
   }
-  
+
   my.df <- my.df[stats::complete.cases(my.df), ]
+
+  # fix names (TD website is a mess!!)
+
+  #browser()
+
+  unique(my.df$asset.code)
+  my.df$asset.code <- stringr::str_replace_all(my.df$asset.code,
+                                               stringr::fixed('NTNBP'),
+                                               'NTN-B Principal')
+
+  my.df$asset.code <- stringr::str_replace_all(my.df$asset.code,
+                                               stringr::fixed('NTNF'),
+                                               'NTN-F')
+
+  my.df$asset.code <- stringr::str_replace_all(my.df$asset.code,
+                                               stringr::fixed('NTNB'),
+                                               'NTN-B')
+
+  my.df$asset.code <- stringr::str_replace_all(my.df$asset.code,
+                                               stringr::fixed('NTNC'),
+                                               'NTN-C')
+
 
   return(my.df)
 }

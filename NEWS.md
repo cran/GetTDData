@@ -1,3 +1,8 @@
+### Version 1.2.2 (2016-05-22)
+  - The html structure of the Tesouro Website has changed and that resulted in CHECK errors in the package. This update fixed it.
+  - Fixed TD names in read function (TD website is a mess!)
+  - Now also using input asset.codes in read function
+	
 ### Version 1.2.1 (2016-05-04)
 	- Fixed bug in read.td.files (it was not reading data after 2012 because of change of output type given switch from xlsx:read.xlsx to readxl::read_excel)
 
