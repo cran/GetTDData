@@ -64,11 +64,46 @@ download.TD.data <- function(asset.codes = 'LTN',
 
   }
 
-  base.url <-
-    "http://sisweb.tesouro.gov.br/apex/f?p=2031:2::::::"
+  base.url <- "http://sisweb.tesouro.gov.br/apex/f?p=2031:2::::::"
 
-  # read html
-  html.code <- paste(readLines(base.url, warn = F), collapse = "\n")
+  # # read html (OLD CODE, keep it for reference)
+  #
+  # html.code <- RCurl::getURL(base.url,
+  #                             .opts = RCurl::curlOptions(cookiejar="",
+  #                                                        useragent = "Mozilla/5.0",
+  #                                                        followlocation = TRUE ))
+
+  # read html code (trying max.tries)
+
+  max.tries <- 10
+
+  i.try <- 1
+  while (TRUE){
+    cat('\nDownloading html page (attempt = ', i.try,'|',max.tries,')',sep = '')
+    html.code <- RCurl::getURL(base.url,
+                               .opts = RCurl::curlOptions(cookiejar="",
+                                                          followlocation = TRUE ))
+
+    # making sure the enconding is correct
+
+    html.code <- stringi::stri_enc_toutf8(html.code)
+
+    # check if html.code makes sense. If not, download it again
+
+    if ( (!is.character(html.code))|(stringr::str_length(html.code)<10) ){
+      cat(' - Error in downloading html page. Trying again..')
+    } else {
+      break()
+    }
+
+    if (i.try==max.tries){
+      stop('Reached maximum number of attempts to download html code. Exiting now...')
+    }
+
+    i.try <- i.try + 1
+
+    Sys.sleep(1)
+  }
 
   # fixing links strings
 

@@ -1,3 +1,6 @@
+### Version 1.2.3 (2016-05-22)
+  - Fixed bug in html download. Now using a new function and a new algorithm to try the download 10 times before throwing an error
+
 ### Version 1.2.2 (2016-05-22)
   - The html structure of the Tesouro Website has changed and that resulted in CHECK errors in the package. This update fixed it.
   - Fixed TD names in read function (TD website is a mess!)
