@@ -35,9 +35,10 @@ You can use input asset.codes to restrict the downloads to specific bonds
 \examples{
 # only download file where string LTN is found
 # (only 1 file for simplicity)
+\dontrun{
 download.TD.data(asset.codes = 'LTN', n.dl = 1)
-
-# The excel file shoulbe available in folder 'TD Files' (default name)
+}
+# The excel file should be available in folder 'TD Files' (default name)
 
 }
 

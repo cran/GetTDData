@@ -21,17 +21,17 @@
 #' # Downloads data from tesouro direto (only 1 file for simplicity)
 #'
 #' dl.folder ='TD Files'
+#'
+#' \dontrun{
 #' download.TD.data(asset.codes = 'LTN', dl.folder = dl.folder, n.dl = 1)
 #'
 #' my.df <- read.TD.files(dl.folder = dl.folder, maturity ='010117')
-#'
+#' }
 read.TD.files <- function(dl.folder = 'TD Files',
                           asset.codes = NULL,
                           maturity = NULL,
                           cols.to.import = c(1,2,4),
                           col.names =  c('ref.date','yield.bid','price.bid')){
-
-  #require(xlsx)
 
   # Error checking
 

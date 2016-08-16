@@ -19,7 +19,7 @@ Suppose you need financial data (prices and yields) for a bond of type LTN with 
 
 In order to get the data, all you need to do is to run the following code in R:
 
-```{r example1}
+```{r example1, eval=FALSE}
 library(GetTDData)
 
 asset.codes <- 'LTN'   # Identifier of assets 
@@ -30,6 +30,12 @@ my.flag <- download.TD.data(asset.codes = asset.codes)
 my.df <- read.TD.files(asset.codes = asset.codes,
                        maturity = maturity)
 
+
+```
+
+```{r rcode_example1, echo=FALSE}
+my.f <- system.file('extdata', 'example1.RDATA', package = 'GetTDData')
+load(my.f)
 ```
 
 Let's plot the prices to check if the code worked well. 
@@ -54,7 +60,7 @@ print(p)
 
 The functions in `GetTDData` also works with multiple arguments as `asset.codes` and `maturity`. Suppose we wanted to look at the prices of all available maturities for bonds of type LTN. All we need to do is to add the value `NULL` to the argument `maturity`:
 
-```{r example2, fig.width=7, fig.height=2.5}
+```{r example2, eval=FALSE}
 library(GetTDData)
 library(ggplot2)
 
@@ -69,6 +75,17 @@ my.flag <- download.TD.data(asset.codes = asset.codes,
 my.df <- read.TD.files(asset.codes = asset.codes, 
                        maturity = maturity)
 
+```
+
+```{r LoadData_example2, echo=FALSE}
+my.f <- system.file('extdata', 'example2.RDATA', package = 'GetTDData')
+
+load(my.f)
+```
+
+Once the data is downloaded, we can plot the prices of the different debt contracts:
+
+```{r example2_plots, fig.width=7, fig.height=2.5}
 # plot data (prices)
 p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = price.bid, color = asset.code))
 p <- p + geom_line() + scale_x_date() + labs(title = '', x = 'Dates', y = 'Prices' )

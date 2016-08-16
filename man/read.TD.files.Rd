@@ -35,9 +35,11 @@ Reads files downloaded by \code{\link{download.TD.data}}
 # Downloads data from tesouro direto (only 1 file for simplicity)
 
 dl.folder ='TD Files'
+
+\dontrun{
 download.TD.data(asset.codes = 'LTN', dl.folder = dl.folder, n.dl = 1)
 
 my.df <- read.TD.files(dl.folder = dl.folder, maturity ='010117')
-
+}
 }
 
