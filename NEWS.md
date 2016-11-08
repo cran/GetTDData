@@ -1,3 +1,6 @@
+### Version 1.2.5 (2016-11-07)
+  - Added the maturities of the instruments as an extra column in the dataframe
+
 ### Version 1.2.4 (2016-08-15)
   - The package CHECK process no longer depends on the avaibility of Tesouro Direto website. All needed files for compilation are local
 

@@ -162,6 +162,8 @@ read.TD.files <- function(dl.folder = 'TD Files',
       temp.df$ref.date <- dateVec
       temp.df$asset.code <- i.sheet
 
+
+
       my.df <- rbind(my.df, temp.df)
     }
 
@@ -191,6 +193,14 @@ read.TD.files <- function(dl.folder = 'TD Files',
                                                stringr::fixed('NTNC'),
                                                'NTN-C')
 
+
+  # add maturity dates
+  my.fct <- function(x){
+    x <- substr(x, nchar(x)-5, nchar(x))
+    return(as.Date(x,'%d%m%y'))
+  }
+
+  my.df$matur.date <- as.Date(sapply(my.df$asset.code,my.fct),origin = '1970-01-01' )
 
   return(my.df)
 }
