@@ -7,12 +7,13 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <meta name="author" content="Marcelo Perlin" />
 
-<meta name="date" content="2019-04-02" />
+<meta name="date" content="2019-07-15" />
 
 <title>Downloading the Current Yield Curve</title>
 
@@ -20,41 +21,67 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 
 </style>
 <script>
@@ -70,7 +97,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -81,7 +108,189 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -95,36 +304,32 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Downloading the Current Yield Curve</h1>
 <h4 class="author">Marcelo Perlin</h4>
-<h4 class="date">2019-04-02</h4>
+<h4 class="date">2019-07-15</h4>
 
 
 
-<p>The latest version of <code>GetTDData</code> offers function <code>get.yield.curve</code> to download the current Brazilian yield curve directly from <a href="http://www.anbima.com.br/est_termo/CZ.asp">Anbima</a>. The yield curve is a tool of financial analysts that show how, based on current prices of fixed income instruments, the market perceives the future real, nominal and inflation returns. You can find more details regarding the use and definition of a yield curve in [Investopedia][<a href="http://www.investopedia.com/terms/y/yieldcurve.asp" class="uri">http://www.investopedia.com/terms/y/yieldcurve.asp</a>].</p>
+<p><strong>BE AWARE that this functionality is currently unavailable due to changes in Anbima’s site. A workaround is currently being searched..</strong></p>
+<p>The latest version of <code>GetTDData</code> offers function <code>get.yield.curve</code> to download the current Brazilian yield curve directly from Anbima. The yield curve is a tool of financial analysts that show, based on current prices of fixed income instruments, how the market perceives the future real, nominal and inflation returns. You can find more details regarding the use and definition of a yield curve in [Investopedia][<a href="http://www.investopedia.com/terms/y/yieldcurve.asp" class="uri">http://www.investopedia.com/terms/y/yieldcurve.asp</a>].</p>
 <div id="usage" class="section level1">
 <h1>Usage</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(GetTDData)
-
-df.yield &lt;-<span class="st"> </span><span class="kw">get.yield.curve</span>()  
-<span class="kw">str</span>(df.yield)</code></pre></div>
-<pre><code>## 'data.frame':    119 obs. of  5 variables:
-##  $ n.biz.days  : num  126 252 378 504 630 ...
-##  $ type        : chr  &quot;real_return&quot; &quot;real_return&quot; &quot;real_return&quot; &quot;real_return&quot; ...
-##  $ value       : num  1.4 2.2 2.74 3.12 3.39 ...
-##  $ ref.date    : Date, format: &quot;2019-08-05&quot; &quot;2019-12-09&quot; ...
-##  $ current.date: Date, format: &quot;2019-04-01&quot; &quot;2019-04-01&quot; ...</code></pre>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(GetTDData)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">df.yield &lt;-<span class="st"> </span><span class="kw">get.yield.curve</span>()  </a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">str</span>(df.yield)</a></code></pre></div>
 <p>And we can plot it for the derised result:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
-
-p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df.yield, <span class="kw">aes</span>(<span class="dt">x=</span>ref.date, <span class="dt">y =</span> value) ) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">size=</span><span class="dv">1</span>) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">facet_grid</span>(<span class="op">~</span>type, <span class="dt">scales =</span> <span class="st">'free'</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">paste0</span>(<span class="st">'The current Brazilian Yield Curve '</span>),
-       <span class="dt">subtitle =</span> <span class="kw">paste0</span>(<span class="st">'Date: '</span>, df.yield<span class="op">$</span>current.date[<span class="dv">1</span>]))     
-
-<span class="kw">print</span>(p)  </code></pre></div>
-<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df.yield, <span class="kw">aes</span>(<span class="dt">x=</span>ref.date, <span class="dt">y =</span> value) ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">size=</span><span class="dv">1</span>) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span><span class="kw">facet_grid</span>(<span class="op">~</span>type, <span class="dt">scales =</span> <span class="st">'free'</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">paste0</span>(<span class="st">'The current Brazilian Yield Curve '</span>),</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">       <span class="dt">subtitle =</span> <span class="kw">paste0</span>(<span class="st">'Date: '</span>, df.yield<span class="op">$</span>current.date[<span class="dv">1</span>]))     </a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="kw">print</span>(p)  </a></code></pre></div>
 </div>
 
+
+
+<!-- code folding -->
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
