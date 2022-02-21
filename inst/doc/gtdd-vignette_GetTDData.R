@@ -1,4 +1,4 @@
-## ----example1, eval=FALSE------------------------------------------------
+## ----example1, eval=FALSE-----------------------------------------------------
 #  library(GetTDData)
 #  
 #  asset.codes <- 'LTN'   # Identifier of assets
@@ -11,24 +11,24 @@
 #  
 #  
 
-## ----rcode_example1, echo=FALSE------------------------------------------
+## ----rcode_example1, echo=FALSE-----------------------------------------------
 my.f <- system.file('extdata', 'example1.RDATA', package = 'GetTDData')
 load(my.f)
 
-## ----plot.prices, fig.width=7, fig.height=2.5----------------------------
+## ----plot.prices, fig.width=7, fig.height=2.5---------------------------------
 library(ggplot2)
 
 p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = price.bid, color = asset.code))
 p <- p + geom_line(size = 1) + scale_x_date() + labs(title = '', x = 'Dates')
 print(p)
 
-## ----plot.yield, fig.width=7, fig.height=2.5-----------------------------
+## ----plot.yield, fig.width=7, fig.height=2.5----------------------------------
 p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = yield.bid, color = asset.code))
 p <- p + geom_line(size = 1) + scale_x_date()+ labs(title = '', x = 'Dates' )
 print(p)
 
 
-## ----example2, eval=FALSE------------------------------------------------
+## ----example2, eval=FALSE-----------------------------------------------------
 #  library(GetTDData)
 #  library(ggplot2)
 #  
@@ -44,12 +44,12 @@ print(p)
 #                         maturity = maturity)
 #  
 
-## ----LoadData_example2, echo=FALSE---------------------------------------
+## ----LoadData_example2, echo=FALSE--------------------------------------------
 my.f <- system.file('extdata', 'example2.RDATA', package = 'GetTDData')
 
 load(my.f)
 
-## ----example2_plots, fig.width=7, fig.height=2.5-------------------------
+## ----example2_plots, fig.width=7, fig.height=2.5------------------------------
 # plot data (prices)
 p <- ggplot(data = my.df, aes(x = as.Date(ref.date), y = price.bid, color = asset.code))
 p <- p + geom_line() + scale_x_date() + labs(title = '', x = 'Dates', y = 'Prices' )

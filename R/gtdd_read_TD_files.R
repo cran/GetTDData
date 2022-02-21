@@ -123,7 +123,7 @@ read.TD.files <- function(dl.folder = 'TD Files',
       cat(paste('\n    Reading Sheet ', i.sheet, sep = ''))
 
       # Read it with readxl (use capture.output to avoid "DEFINEDNAME:"  issue)
-      # see: https://github.com/hadley/readxl/issues/111
+      # see: https://github.com/hadley/readxl/issues/111/
       utils::capture.output( temp.df <- readxl::read_excel(path = i.f,
                                                            sheet = i.sheet,
                                                            skip = 1 ) )
@@ -182,10 +182,6 @@ read.TD.files <- function(dl.folder = 'TD Files',
   my.df <- my.df[stats::complete.cases(my.df), ]
 
   # fix names (TD website is a mess!!)
-
-  #browser()
-
-  unique(my.df$asset.code)
   my.df$asset.code <- stringr::str_replace_all(my.df$asset.code,
                                                stringr::fixed('NTNBP'),
                                                'NTN-B Principal')
@@ -221,6 +217,9 @@ read.TD.files <- function(dl.folder = 'TD Files',
   col.classes <- sapply(my.df, class)
   col.classes <- col.classes[col.classes == 'numeric']
   col.to.change <- names(col.classes)
+
+  # remove yield columns
+  col.to.change <- col.to.change[!stringr::str_detect(col.to.change, "yield")]
   idx <- apply((as.matrix(my.df[, col.to.change]) == 0 ),
                MARGIN = 1, any)
 
