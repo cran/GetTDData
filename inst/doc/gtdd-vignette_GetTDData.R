@@ -13,9 +13,16 @@ my.df <- read.TD.files(dl.folder = cache_folder)
 library(ggplot2)
 library(dplyr)
 
-# filter single LTN 
+# filter  LTN 
+my_asset_code <- "LTN 010123"
+first_date <- as.Date("2015-01-01")
+
+my.df <- my.df %>%
+  filter(ref.date >= first_date)
+
 LTN <- my.df %>%
-  filter(matur.date == as.Date("2020-01-01") )
+  filter(asset.code  ==  my_asset_code,
+         ref.date >= first_date)
 
 p <- ggplot(data = LTN, 
             aes(x = as.Date(ref.date), 
@@ -30,7 +37,7 @@ p <- ggplot(data = LTN,
             aes(x = as.Date(ref.date), 
                 y = yield.bid, 
                 color = asset.code)) + 
-   geom_line(size = 1) + 
+  geom_line(size = 1) + 
   scale_x_date() + 
   labs(title = '', 
        x = 'Dates')
