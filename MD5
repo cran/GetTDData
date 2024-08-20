@@ -1,13 +1,13 @@
-f288494f1c38704359fad4067023ad7a *DESCRIPTION
+b223c35961583618e0e3b55ce3fcbcf9 *DESCRIPTION
 09b5fca9fe67479affb709c91a482fea *LICENSE
 ded015a66932b2031870e7674da220e9 *NAMESPACE
-1f6eab6762b1c782795389417fd733ee *NEWS.md
+45e572dcc5d420390b38f2c63bd6ae75 *NEWS.md
 a728e3d26284e575f9be631c7071eedb *R/download_td_file.R
 b6da5831d2f49707c93c6e3c80394152 *R/globals.R
 05bb53142587daa4405085b75def6478 *R/gtdd_get_yield_curve.R
 583fc3d3e4fa9e0c7db74216bb87cc01 *R/read_td_file.R
 084dd8086ce946589a8d3b6747ccac84 *R/td_get.R
-9c85a8cbb99e07bd93b72158c92e7f06 *R/td_get_current.R
+7ff1c0afe6fb72298dacd3640e5e6e0e *R/td_get_current.R
 118c7e362231f02be688ed9a498faad3 *R/utils.R
 eba280cb1de4099f0088ffdd73f1592b *README.md
 e560e71031297060f96dfdd41a801ed1 *inst/extdata/example1.RDATA
@@ -17,8 +17,8 @@ e2d443f31be91563d2a868d0fc0309e1 *man/get.yield.curve.Rd
 bc838e7f55924f2e20de6484d1f52ea4 *man/get_cache_folder.Rd
 a6fd31e2c0e62473b51501c464578649 *man/get_td_names.Rd
 7631b7c252a1b2068e015a5d62f35fb7 *man/td_get.Rd
-e4b4a3aae56fcd95daed517570e5fef4 *man/td_get_current.Rd
+f05b7fe686cec858c3c78efd4cc8e017 *man/td_get_current.Rd
 407368f591bed33ff7f8024e11e76434 *tests/testthat.R
-3b872fe85394f4eca915e0d3e61d23c0 *tests/testthat/test-importing-data.R
+b33ae871f928d92c0561fa6444360fe1 *tests/testthat/test-importing-data.R
 ca75c2fe3d6bc15408b7bb7576a40a14 *tests/testthat/test-utils.R
 1dad2bc3d6d6c89f03747fedae41bfb1 *tests/testthat/test-yc.R
