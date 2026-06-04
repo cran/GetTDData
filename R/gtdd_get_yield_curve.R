@@ -1,28 +1,18 @@
 #' Gets the current yield curve
 #'
-#' Downloads and parses information about the current Brazilian yield curve.
+#' Downloads and parses information about the current Brazilian yield curve from Anbima.
 #'
-#' @return A dataframe with information about the yield curve
+#' @return A data frame with information about the yield curve.
 #' @export
 #' @import rvest xml2
 #'
 #' @examples
 #' \dontrun{
-#' df.yield <- get.yield.curve()
-#' str(df.yield)
+#' df_yield <- get_yield_curve()
+#' str(df_yield)
 #' }
-get.yield.curve <- function(){
+get_yield_curve <- function(){
 
-  # message and return empty df (FIXED)
-  # my.msg <- paste0('The previous Anbima site is no longer available. Data about ',
-  #                  'the yield curve cannot be scrapped from the site, meaning that ',
-  #                  'this function is no longer working. An alternative (and free) source of brazilian yield data is ',
-  #                  'being searched. If you know one, please drop an email at marceloperlin@gmail.com. \n\n',
-  #                  'Returning an empty dataframe.')
-  # message(my.msg)
-  #return(data.frame())
-
-  # NEW CODE
   my_html <- read_html('https://www.anbima.com.br/informacoes/est-termo/CZ.asp')
   my_tab <-  my_html %>%
     html_nodes(xpath = '//*[@id="ETTJs"]/table') %>%
@@ -40,28 +30,23 @@ get.yield.curve <- function(){
   # get yield curve data and organize it
   df_yc <- df_yc[2:nrow(df_yc), ]
 
-  names(df_yc) <- c('n.biz.days', 'real_return', 'nominal_return', 'implicit_inflation')
+  names(df_yc) <- c('n_biz_days', 'real_return', 'nominal_return', 'implicit_inflation')
 
   df_yc <- as.data.frame(lapply(df_yc, FUN = function(x) as.character(x)),
                       stringsAsFactors = F)
 
-  n.biz.days <- NULL
-  df_yc <- tidyr::gather(data = df_yc, 'type', value = 'value', -n.biz.days )
+  n_biz_days <- NULL
+  df_yc <- tidyr::pivot_longer(
+    data = df_yc,
+    cols = -n_biz_days,
+    names_to = "type",
+    values_to = "value"
+  )
 
   df_yc <- df_yc[df_yc$value!='',]
 
-  # also get additional, short term, data for expected nominal returns
-  # temp <- my.l[[11-3]]
-  # temp.nrow <- nrow(temp)
-  #
-  # df <- rbind(df, data.frame(n.biz.days = c(as.character(temp[[1]][3:temp.nrow]),
-  #                                       as.character(temp[[3]][3:temp.nrow])),
-  #                            type = rep ('nominal_return', temp.nrow*2-4),
-  #                            value = c(as.character(temp[[2]][3:temp.nrow]),
-  #                                      as.character(temp[[4]][3:temp.nrow]))) )
-
   # fix cols
-  my.fix.fct <- function(x) {
+  my_fix_fct <- function(x) {
     x <- as.character(x)
     x <- stringr::str_replace(x, stringr::fixed('.'), '')
     x <- stringr::str_replace(x, stringr::fixed(','), '.')
@@ -69,9 +54,9 @@ get.yield.curve <- function(){
     return(x)
   }
 
-  df_yc <- as.data.frame(lapply(df_yc, FUN = my.fix.fct), stringsAsFactors = F)
+  df_yc <- as.data.frame(lapply(df_yc, FUN = my_fix_fct), stringsAsFactors = F)
 
-  df_yc$n.biz.days <- as.numeric(df_yc$n.biz.days)
+  df_yc$n_biz_days <- as.numeric(df_yc$n_biz_days)
   df_yc$value <- as.numeric(df_yc$value)
 
   bizdays::load_builtin_calendars()
@@ -81,11 +66,18 @@ get.yield.curve <- function(){
                          holidays = my_holidays,
                          weekdays=c("saturday", "sunday"))
 
-  df_yc$ref.date <- bizdays::add.bizdays(date_now, df_yc$n.biz.days,
+  df_yc$ref_date <- bizdays::add.bizdays(date_now, df_yc$n_biz_days,
                                          cal = cal)
-  df_yc$current.date <- date_now
+  df_yc$current_date <- date_now
 
   return(df_yc)
 
+}
+
+#' @rdname get_yield_curve
+#' @export
+get.yield.curve <- function() {
+  .Deprecated("get_yield_curve")
+  return(get_yield_curve())
 }
 
